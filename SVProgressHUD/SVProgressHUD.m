@@ -29,6 +29,7 @@ static CGFloat SVProgressHUDRingThickness;
 static UIFont *SVProgressHUDFont;
 static UIImage *SVProgressHUDSuccessImage;
 static UIImage *SVProgressHUDErrorImage;
+static UIImage *SVProgressHUDRotatingImage;
 
 static const CGFloat SVProgressHUDRingRadius = 18;
 static const CGFloat SVProgressHUDRingNoTextRadius = 24;
@@ -98,6 +99,11 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 + (void)setForegroundColor:(UIColor *)color {
     [self sharedView];
     SVProgressHUDForegroundColor = color;
+}
+
++ (void)setRotatingImage:(UIImage *)rotatingImage {
+    [self sharedView];
+    SVProgressHUDRotatingImage = rotatingImage;
 }
 
 + (void)setTextColor:(UIColor*)color
@@ -213,7 +219,7 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
         SVProgressHUDBackgroundColor = [UIColor whiteColor];
         SVProgressHUDForegroundColor = [UIColor blackColor];
         SVProgressHUDTextColor = [UIColor blackColor];
-        
+
         if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
           SVProgressHUDFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
         } else {
@@ -874,7 +880,7 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 
 @interface SVIndefiniteAnimatedView ()
 
-@property (nonatomic, strong) CAShapeLayer *indefiniteAnimatedLayer;
+@property (nonatomic, strong) CALayer *indefiniteAnimatedLayer;
 
 @end
 
@@ -906,31 +912,40 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
     layer.position = CGPointMake(self.bounds.size.width - layer.bounds.size.width / 2, self.bounds.size.height - layer.bounds.size.height / 2);
 }
 
-- (CAShapeLayer*)indefiniteAnimatedLayer {
+- (CALayer*)indefiniteAnimatedLayer {
     if(!_indefiniteAnimatedLayer) {
-        CGPoint arcCenter = CGPointMake(self.radius+self.strokeThickness/2+5, self.radius+self.strokeThickness/2+5);
-        CGRect rect = CGRectMake(0, 0, arcCenter.x*2, arcCenter.y*2);
-        
-        UIBezierPath* smoothedPath = [UIBezierPath bezierPathWithArcCenter:arcCenter
-                                                                    radius:self.radius
-                                                                startAngle:M_PI*3/2
-                                                                  endAngle:M_PI/2+M_PI*5
-                                                                 clockwise:YES];
-        
-        _indefiniteAnimatedLayer = [CAShapeLayer layer];
-        _indefiniteAnimatedLayer.contentsScale = [[UIScreen mainScreen] scale];
-        _indefiniteAnimatedLayer.frame = rect;
-        _indefiniteAnimatedLayer.fillColor = [UIColor clearColor].CGColor;
-        _indefiniteAnimatedLayer.strokeColor = self.strokeColor.CGColor;
-        _indefiniteAnimatedLayer.lineWidth = self.strokeThickness;
-        _indefiniteAnimatedLayer.lineCap = kCALineCapRound;
-        _indefiniteAnimatedLayer.lineJoin = kCALineJoinBevel;
-        _indefiniteAnimatedLayer.path = smoothedPath.CGPath;
-        
-        CALayer *maskLayer = [CALayer layer];
-        maskLayer.contents = (id)[[UIImage imageNamed:@"SVProgressHUD.bundle/angle-mask@2x.png"] CGImage];
-        maskLayer.frame = _indefiniteAnimatedLayer.bounds;
-        _indefiniteAnimatedLayer.mask = maskLayer;
+        if (SVProgressHUDRotatingImage) {
+            _indefiniteAnimatedLayer = [CALayer layer];
+            _indefiniteAnimatedLayer.contents = SVProgressHUDRotatingImage;
+            _indefiniteAnimatedLayer.frame = CGRectMake(0, 0, SVProgressHUDRotatingImage.size.width, SVProgressHUDRotatingImage.size.height);
+        }
+        else {
+            CGPoint arcCenter = CGPointMake(self.radius+self.strokeThickness/2+5, self.radius+self.strokeThickness/2+5);
+            CGRect rect = CGRectMake(0, 0, arcCenter.x*2, arcCenter.y*2);
+            
+            UIBezierPath* smoothedPath = [UIBezierPath bezierPathWithArcCenter:arcCenter
+                                                                        radius:self.radius
+                                                                    startAngle:M_PI*3/2
+                                                                      endAngle:M_PI/2+M_PI*5
+                                                                     clockwise:YES];
+            CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+            shapeLayer.contentsScale = [[UIScreen mainScreen] scale];
+            shapeLayer.frame = rect;
+            shapeLayer.fillColor = [UIColor clearColor].CGColor;
+            shapeLayer.strokeColor = self.strokeColor.CGColor;
+            shapeLayer.lineWidth = self.strokeThickness;
+            shapeLayer.lineCap = kCALineCapRound;
+            shapeLayer.lineJoin = kCALineJoinBevel;
+            shapeLayer.path = smoothedPath.CGPath;
+            
+            _indefiniteAnimatedLayer = shapeLayer;
+            
+            CALayer *maskLayer = [CALayer layer];
+            maskLayer.contents = (id)[[UIImage imageNamed:@"SVProgressHUD.bundle/angle-mask@2x.png"] CGImage];
+            maskLayer.frame = _indefiniteAnimatedLayer.bounds;
+            _indefiniteAnimatedLayer.mask = maskLayer;
+        }
+
         
         NSTimeInterval animationDuration = 1;
         CAMediaTimingFunction *linearCurve = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
