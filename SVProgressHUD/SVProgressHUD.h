@@ -33,6 +33,7 @@ typedef NSUInteger SVProgressHUDMaskType;
 
 + (void)setBackgroundColor:(UIColor*)color; // default is [UIColor whiteColor]
 + (void)setForegroundColor:(UIColor*)color; // default is [UIColor blackColor]
++ (void)setTextColor:(UIColor*)color; // default is [UIColor blackColor]
 + (void)setRingThickness:(CGFloat)width; // default is 4 pt
 + (void)setFont:(UIFont*)font; // default is [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline]
 + (void)setSuccessImage:(UIImage*)image; // default is bundled success image from Glyphish

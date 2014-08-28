@@ -24,6 +24,7 @@ NSString * const SVProgressHUDStatusUserInfoKey = @"SVProgressHUDStatusUserInfoK
 
 static UIColor *SVProgressHUDBackgroundColor;
 static UIColor *SVProgressHUDForegroundColor;
+static UIColor *SVProgressHUDTextColor;
 static CGFloat SVProgressHUDRingThickness;
 static UIFont *SVProgressHUDFont;
 static UIImage *SVProgressHUDSuccessImage;
@@ -97,6 +98,12 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 + (void)setForegroundColor:(UIColor *)color {
     [self sharedView];
     SVProgressHUDForegroundColor = color;
+}
+
++ (void)setTextColor:(UIColor*)color
+{
+    [self sharedView];
+    SVProgressHUDTextColor = color;
 }
 
 + (void)setFont:(UIFont *)font {
@@ -205,6 +212,8 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
         
         SVProgressHUDBackgroundColor = [UIColor whiteColor];
         SVProgressHUDForegroundColor = [UIColor blackColor];
+        SVProgressHUDTextColor = [UIColor blackColor];
+        
         if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
           SVProgressHUDFont = [UIFont preferredFontForTextStyle:UIFontTextStyleSubheadline];
         } else {
@@ -919,7 +928,7 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
         _indefiniteAnimatedLayer.path = smoothedPath.CGPath;
         
         CALayer *maskLayer = [CALayer layer];
-        maskLayer.contents = (id)[[UIImage imageNamed:@"SVProgressHUD.bundle/angle-mask@2x.png"] CGImage];
+        maskLayer.contents = (id)[[UIImage imageNamed:@"SVProgressHUD.bundle/angle-colored-mask@2x.png"] CGImage];
         maskLayer.frame = _indefiniteAnimatedLayer.bounds;
         _indefiniteAnimatedLayer.mask = maskLayer;
         
