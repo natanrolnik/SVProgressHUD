@@ -914,10 +914,22 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 
 - (CALayer*)indefiniteAnimatedLayer {
     if(!_indefiniteAnimatedLayer) {
+        NSTimeInterval animationDuration = 1;
+        
         if (SVProgressHUDRotatingImage) {
             _indefiniteAnimatedLayer = [CALayer layer];
-            _indefiniteAnimatedLayer.contents = SVProgressHUDRotatingImage;
+            _indefiniteAnimatedLayer.contents = (id) SVProgressHUDRotatingImage.CGImage;
             _indefiniteAnimatedLayer.frame = CGRectMake(0, 0, SVProgressHUDRotatingImage.size.width, SVProgressHUDRotatingImage.size.height);
+            
+            NSNumber *rotationAtStart = [_indefiniteAnimatedLayer valueForKeyPath:@"transform.rotation"];
+            CATransform3D myRotationTransform = CATransform3DRotate(_indefiniteAnimatedLayer.transform, M_PI*2, 0.0, 0.0, 1.0);
+            _indefiniteAnimatedLayer.transform = myRotationTransform;
+            CABasicAnimation *myAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+            myAnimation.duration = animationDuration;
+            myAnimation.fromValue = rotationAtStart;
+            myAnimation.repeatCount = INFINITY;
+            myAnimation.toValue = [NSNumber numberWithFloat:([rotationAtStart floatValue] + M_PI*2)];
+            [_indefiniteAnimatedLayer addAnimation:myAnimation forKey:@"transform.rotation"];
         }
         else {
             CGPoint arcCenter = CGPointMake(self.radius+self.strokeThickness/2+5, self.radius+self.strokeThickness/2+5);
@@ -944,41 +956,39 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
             maskLayer.contents = (id)[[UIImage imageNamed:@"SVProgressHUD.bundle/angle-mask@2x.png"] CGImage];
             maskLayer.frame = _indefiniteAnimatedLayer.bounds;
             _indefiniteAnimatedLayer.mask = maskLayer;
+            
+            CAMediaTimingFunction *linearCurve = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+            
+            CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+            animation.fromValue = 0;
+            animation.toValue = [NSNumber numberWithFloat:M_PI*2];
+            animation.duration = animationDuration;
+            animation.timingFunction = linearCurve;
+            animation.removedOnCompletion = NO;
+            animation.repeatCount = INFINITY;
+            animation.fillMode = kCAFillModeForwards;
+            animation.autoreverses = NO;
+            [_indefiniteAnimatedLayer.mask addAnimation:animation forKey:@"rotate"];
+            
+            CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
+            animationGroup.duration = animationDuration;
+            animationGroup.repeatCount = INFINITY;
+            animationGroup.removedOnCompletion = NO;
+            animationGroup.timingFunction = linearCurve;
+            
+            CABasicAnimation *strokeStartAnimation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
+            strokeStartAnimation.fromValue = @0.015;
+            strokeStartAnimation.toValue = @0.515;
+            
+            CABasicAnimation *strokeEndAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+            strokeEndAnimation.fromValue = @0.485;
+            strokeEndAnimation.toValue = @0.985;
+            
+            animationGroup.animations = @[strokeStartAnimation, strokeEndAnimation];
+            [_indefiniteAnimatedLayer addAnimation:animationGroup forKey:@"progress"];
         }
-
-        
-        NSTimeInterval animationDuration = 1;
-        CAMediaTimingFunction *linearCurve = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-        
-        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-        animation.fromValue = 0;
-        animation.toValue = [NSNumber numberWithFloat:M_PI*2];
-        animation.duration = animationDuration;
-        animation.timingFunction = linearCurve;
-        animation.removedOnCompletion = NO;
-        animation.repeatCount = INFINITY;
-        animation.fillMode = kCAFillModeForwards;
-        animation.autoreverses = NO;
-        [_indefiniteAnimatedLayer.mask addAnimation:animation forKey:@"rotate"];
-        
-        CAAnimationGroup *animationGroup = [CAAnimationGroup animation];
-        animationGroup.duration = animationDuration;
-        animationGroup.repeatCount = INFINITY;
-        animationGroup.removedOnCompletion = NO;
-        animationGroup.timingFunction = linearCurve;
-        
-        CABasicAnimation *strokeStartAnimation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
-        strokeStartAnimation.fromValue = @0.015;
-        strokeStartAnimation.toValue = @0.515;
-        
-        CABasicAnimation *strokeEndAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        strokeEndAnimation.fromValue = @0.485;
-        strokeEndAnimation.toValue = @0.985;
-        
-        animationGroup.animations = @[strokeStartAnimation, strokeEndAnimation];
-        [_indefiniteAnimatedLayer addAnimation:animationGroup forKey:@"progress"];
-        
     }
+    
     return _indefiniteAnimatedLayer;
 }
 
@@ -1001,12 +1011,19 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 
 - (void)setStrokeColor:(UIColor *)strokeColor {
     _strokeColor = strokeColor;
-    _indefiniteAnimatedLayer.strokeColor = strokeColor.CGColor;
+    if ([_indefiniteAnimatedLayer respondsToSelector:@selector(setStrokeColor:)]) {
+        CAShapeLayer *shapeLayer = (CAShapeLayer *) _indefiniteAnimatedLayer;
+        shapeLayer.strokeColor = strokeColor.CGColor;
+    }
+    
 }
 
 - (void)setStrokeThickness:(CGFloat)strokeThickness {
     _strokeThickness = strokeThickness;
-    _indefiniteAnimatedLayer.lineWidth = _strokeThickness;
+    if ([_indefiniteAnimatedLayer respondsToSelector:@selector(setLineWidth:)]) {
+        CAShapeLayer *shapeLayer = (CAShapeLayer *) _indefiniteAnimatedLayer;
+        shapeLayer.lineWidth = strokeThickness;
+    }
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
