@@ -847,7 +847,7 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 
 - (UIImageView *)imageView {
     if (_imageView == nil)
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 28, 28)];
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 50, 50)];
     
     if(!_imageView.superview)
         [self.hudView addSubview:_imageView];
