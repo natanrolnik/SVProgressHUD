@@ -7,6 +7,7 @@
 //
 
 #import "SVIndefiniteAnimatedView.h"
+#import "SVProgressHUD.h"
 #import <RBBAnimation/RBBSpringAnimation.h>
 #import <RBBAnimation/RBBTweenAnimation.h>
 #import <RBBAnimation/RBBCubicBezier.h>
