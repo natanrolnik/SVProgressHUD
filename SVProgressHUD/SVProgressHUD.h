@@ -18,6 +18,9 @@ extern NSString * const SVProgressHUDDidAppearNotification;
 
 extern NSString * const SVProgressHUDStatusUserInfoKey;
 
+static UIImage *SVProgressHUDRotatingImage;
+static BOOL SVProgressHUDRotateImageSpringy;
+
 typedef NS_ENUM(NSUInteger, SVProgressHUDMaskType) {
     SVProgressHUDMaskTypeNone = 1,  // allow user interactions while HUD is displayed
     SVProgressHUDMaskTypeClear,     // don't allow user interactions

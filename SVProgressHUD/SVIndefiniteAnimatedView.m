@@ -7,6 +7,10 @@
 //
 
 #import "SVIndefiniteAnimatedView.h"
+#import <RBBAnimation/RBBSpringAnimation.h>
+#import <RBBAnimation/RBBTweenAnimation.h>
+#import <RBBAnimation/RBBCubicBezier.h>
+#import <RBBAnimation/RBBCustomAnimation.h>
 
 #pragma mark SVIndefiniteAnimatedView
 

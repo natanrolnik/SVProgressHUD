@@ -13,10 +13,6 @@
 #import "SVProgressHUD.h"
 #import "SVIndefiniteAnimatedView.h"
 #import <QuartzCore/QuartzCore.h>
-#import <RBBAnimation/RBBSpringAnimation.h>
-#import <RBBAnimation/RBBTweenAnimation.h>
-#import <RBBAnimation/RBBCubicBezier.h>
-#import <RBBAnimation/RBBCustomAnimation.h>
 
 NSString * const SVProgressHUDDidReceiveTouchEventNotification = @"SVProgressHUDDidReceiveTouchEventNotification";
 NSString * const SVProgressHUDDidTouchDownInsideNotification = @"SVProgressHUDDidTouchDownInsideNotification";
@@ -35,8 +31,6 @@ static UIFont *SVProgressHUDFont;
 static UIImage *SVProgressHUDInfoImage;
 static UIImage *SVProgressHUDSuccessImage;
 static UIImage *SVProgressHUDErrorImage;
-static UIImage *SVProgressHUDRotatingImage;
-static BOOL SVProgressHUDRotateImageSpringy;
 static SVProgressHUDMaskType SVProgressHUDDefaultMaskType;
 static UIView *SVProgressHUDExtensionView;
 
