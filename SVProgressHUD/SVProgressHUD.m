@@ -44,6 +44,12 @@ static const CGFloat SVProgressHUDRingNoTextRadius = 24;
 static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
 static const CGFloat SVProgressHUDUndefinedProgress = -1;
 
+@interface SVIndefiniteAnimatedView ()
+
+@property (nonatomic, strong) CALayer *indefiniteAnimatedLayer;
+
+@end
+
 @interface SVProgressHUD ()
 
 @property (nonatomic, readwrite) SVProgressHUDMaskType maskType;
@@ -76,12 +82,6 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 - (void)moveToPoint:(CGPoint)newCenter rotateAngle:(CGFloat)angle;
 - (void)positionHUD:(NSNotification*)notification;
 - (NSTimeInterval)displayDurationForString:(NSString*)string;
-
-@end
-
-@interface SVIndefiniteAnimatedView ()
-
-@property (nonatomic, strong) CALayer *indefiniteAnimatedLayer;
 
 @end
 
