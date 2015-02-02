@@ -79,6 +79,11 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 
 @end
 
+@interface SVIndefiniteAnimatedView ()
+
+@property (nonatomic, strong) CALayer *indefiniteAnimatedLayer;
+
+@end
 
 @implementation SVProgressHUD
 
@@ -1017,12 +1022,6 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
 @end
 
 #pragma mark SVIndefiniteAnimatedView
-
-@interface SVIndefiniteAnimatedView ()
-
-@property (nonatomic, strong) CALayer *indefiniteAnimatedLayer;
-
-@end
 
 @implementation SVIndefiniteAnimatedView
 
