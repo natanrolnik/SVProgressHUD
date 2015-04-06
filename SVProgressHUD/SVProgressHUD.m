@@ -101,11 +101,6 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
     SVProgressHUDForegroundColor = color;
 }
 
-+ (void)setRotatingImage:(UIImage *)rotatingImage {
-    [self sharedView];
-    SVProgressHUDRotatingImage = rotatingImage;
-}
-
 + (void)setTextColor:(UIColor*)color
 {
     [self sharedView];
@@ -122,9 +117,15 @@ static const CGFloat SVProgressHUDUndefinedProgress = -1;
     SVProgressHUDRingThickness = width;
 }
 
++ (void)setRotatingImage:(UIImage *)rotatingImage
+{
+    [self sharedView];
+    [SVIndefiniteAnimatedView setRotatingImage:rotatingImage];
+}
+
 + (void)setRotateImageSpringy:(BOOL)rotateSpringy
 {
-    SVProgressHUDRotateImageSpringy = rotateSpringy;
+    [SVIndefiniteAnimatedView setRotateImageSpringy:rotateSpringy];
 }
 
 + (void)setInfoImage:(UIImage*)image{

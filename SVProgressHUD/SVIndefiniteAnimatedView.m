@@ -15,6 +15,9 @@
 
 #pragma mark SVIndefiniteAnimatedView
 
+static UIImage *SVProgressHUDRotatingImage;
+static BOOL SVProgressHUDRotateImageSpringy;
+
 @interface SVIndefiniteAnimatedView ()
 
 @property (nonatomic, strong) CAShapeLayer *indefiniteAnimatedLayer;
@@ -22,6 +25,16 @@
 @end
 
 @implementation SVIndefiniteAnimatedView
+
++ (void)setRotatingImage:(UIImage *)rotatingImage
+{
+    SVProgressHUDRotatingImage = rotatingImage;
+}
+
++ (void)setRotateImageSpringy:(BOOL)rotateSpringy
+{
+    SVProgressHUDRotateImageSpringy = rotateSpringy;
+}
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     if (newSuperview) {

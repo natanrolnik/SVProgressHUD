@@ -14,5 +14,9 @@
 @property (nonatomic, assign) CGFloat radius;
 @property (nonatomic, strong) UIColor *strokeColor;
 
++ (void)setRotatingImage:(UIImage *)rotatingImage;
+
++ (void)setRotateImageSpringy:(BOOL)rotateSpringy;
+
 @end
 
